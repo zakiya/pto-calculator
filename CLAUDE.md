@@ -89,8 +89,9 @@ Views, both filtered `Is Actual or K <= 12`, sorted by `Sort Key` asc:
   `Hours Needed`, `Is Actual`. This is what the user reads when filing a timesheet.
 
 **The filter hides 18 of 36 rows: July 2027 – December 2028.** It is display-only —
-hidden months still compute and are still subtracted. But a day booked past the
-window vanishes from both views silently. Widen the filter when planning that far out.
+hidden months still compute and are still subtracted. But a day entered past the
+window vanishes from both views silently. Widen the filter when entering dates that
+far out.
 
 ## Canvas formulas (on `canvas-I6Q9Skge0B`)
 
@@ -225,17 +226,19 @@ the LY-before-AL rule.
 means Tempo closed a month before the timesheet posted, so planned days stopped
 being subtracted for a month that was never charged.
 
-Invariants 1–4 hold regardless of what is planned, so they don't go stale when
-the user books a trip. Prefer them over any hard-coded numbers.
+Invariants 1–4 hold regardless of what is planned, so they survive any edit to
+`Projected time off` and any new sync. Prefer them over any hard-coded numbers.
 
 ## Current state (2026-07-25)
 
 Last posted month June 2026 (`LastActualSK` 202606); seeds AL 202, LY 0.
-28 planned days / 224h: 4 Jul 2026, 4 Aug 2026 ("Home"), 20 May 31 – Jun 25 2027
-("World Cup 2027"). Nothing over-planned (min AL End 166). Latest planned day is
-**K=12, the last month the view filter shows**.
+28 planned days / 224h — 4 in Jul 2026, 4 in Aug 2026, 20 spanning May 31 – Jun 25
+2027. Nothing over-planned (min AL End 166). Latest planned day is **K=12, the last
+month the view filter shows**.
 
-Snapshot — goes stale as soon as travel is booked; use the invariants instead:
+Snapshot only. It goes stale on any row added, removed, or edited in
+`Projected time off`, on any `Hours override`, and on any sync that advances
+`LastActualSK`. Never treat these numbers as expected values — use the invariants:
 
 | Month | LY Avail | LY Used | LY End | AL Avail | AL Used | AL End |
 |---|---|---|---|---|---|---|
